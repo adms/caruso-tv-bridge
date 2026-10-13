@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Adms Chung
+// SPDX-License-Identifier: Apache-2.0
 const $ = id => document.getElementById(id);
 let state = {}, token = '', busy = false, editing = false, events, toastTimer, streamAlive = true;
 const minutes = ms => `${Math.floor(Math.max(0, ms) / 60000)}:${String(Math.floor(Math.max(0, ms) / 1000) % 60).padStart(2, '0')}`;

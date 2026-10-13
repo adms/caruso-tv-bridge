@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 import net from 'node:net';
 import { EventEmitter } from 'node:events';
 // LUCI wire format reference: drsound/aiolibresync (MIT), protocol-media.md.

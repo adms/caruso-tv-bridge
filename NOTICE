@@ -1,18 +1,24 @@
 Caruso TV Bridge
 Copyright (c) 2026 Adms Chung
-https://github.com/adms/caruso-tv-bridge
+Created by Adms Chung.
+Project source: https://github.com/adms/caruso-tv-bridge
 
-引用、改寫、重製或散布本專案時，請保留：
+Original project material is licensed under the Apache License, Version 2.0.
+See LICENSE. This NOTICE provides attribution information and does not add
+to or modify the license terms.
+
+本專案原創內容由 Adms Chung 製作。
 Copyright (c) 2026 Adms Chung
-並註明上述專案來源。散布本專案的副本或重要部分時，須依 MIT License
-保留版權聲明及授權條款。引用格式見 CITATION.cff 與 docs/ATTRIBUTION.md。
+專案來源：https://github.com/adms/caruso-tv-bridge
+授權條款見 LICENSE；本 NOTICE 提供來源署名資訊，不增加或修改授權條件。
 
-When citing, adapting, reproducing or redistributing this project, retain
-"Copyright (c) 2026 Adms Chung" and identify the project source above.
-Copies or substantial portions of the Software must retain the copyright
-and permission notices as required by the MIT License.
+This distribution includes AdbLib by Cameron Gutman.
+Copyright (c) 2013, Cameron Gutman. BSD-3-Clause.
+Local AdbLib modifications: Copyright (c) 2026 Adms Chung, BSD-3-Clause.
+The web controller's LUCI wire-format research references aiolibresync by
+Alessandro Zarrilli. Copyright (c) 2026 Alessandro Zarrilli. MIT.
+Third-party ownership and licenses remain unchanged; see THIRD_PARTY_NOTICES.md
+and the accompanying third-party license texts.
 
-Third-party components retain their original ownership and licenses.
-See THIRD_PARTY_NOTICES.md and LICENSES/; do not replace their author notices
-with this project's attribution. Modifications to vendored AdbLib in this
-repository: Copyright (c) 2026 Adms Chung, under its BSD-3-Clause terms.
+This is an independent project, not affiliated with or endorsed by T+A,
+Apple, or Sony. Product names identify compatibility and their owners.

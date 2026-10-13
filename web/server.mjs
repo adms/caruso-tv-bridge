@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';

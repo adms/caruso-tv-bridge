@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2026 Adms Chung
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 from pathlib import Path
 import subprocess
 root = Path(__file__).resolve().parents[1]

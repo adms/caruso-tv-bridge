@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 import tw.local.carusobridge.*;
 public final class ConfigTest {
  static void check(boolean b,String message){if(!b)throw new AssertionError(message);}

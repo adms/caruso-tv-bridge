@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';

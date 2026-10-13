@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 import { createHash } from 'node:crypto';
 // Inventory from T+A Caruso UM_Caruso_220_DE_EN, Audio menu, pages 61–62.
 // These labels do NOT imply a device read. No settings message IDs are guessed.

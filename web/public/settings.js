@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Adms Chung
+// SPDX-License-Identifier: Apache-2.0
 const $=id=>document.getElementById(id);let token='',view;
 function showError(message){const box=$('inspection');box.replaceChildren();const p=document.createElement('p');p.textContent=message;box.append(p);box.hidden=false;}
 async function load(){

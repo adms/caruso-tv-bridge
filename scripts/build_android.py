@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2026 Adms Chung
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 """Build an unsigned APK using a caller-provided Android SDK; never installs it."""
 from pathlib import Path
 import argparse, os, re, shutil, subprocess, zipfile
@@ -41,5 +41,7 @@ with zipfile.ZipFile(apk, 'a', zipfile.ZIP_DEFLATED) as z:
     for f in (root / 'LICENSE', root / 'NOTICE', root / 'THIRD_PARTY_NOTICES.md'):
         z.write(f, 'assets/' + f.name)
     for f in (root / 'LICENSES').iterdir(): z.write(f, 'assets/licenses/' + f.name)
-    z.writestr('assets/NOTICE.txt', '\n\n'.join((root / n).read_text() for n in ('NOTICE', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'LICENSES/AdbLib-BSD-3-Clause.txt')))
+    notices = [root / n for n in ('NOTICE', 'LICENSE', 'THIRD_PARTY_NOTICES.md')]
+    notices += sorted((root / 'LICENSES').iterdir())
+    z.writestr('assets/NOTICE.txt', '\n\n'.join(f.read_text() for f in notices))
 print('Built unsigned APK:', apk.relative_to(root))

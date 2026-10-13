@@ -16,7 +16,7 @@
     "electron": "44.7.0"
   },
   "author": "Adms Chung",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/adms/caruso-tv-bridge.git",

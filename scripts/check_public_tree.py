@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2026 Adms Chung
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 """Check tracked source for personal paths, unexpected private IPs and secret artifacts."""
 from pathlib import Path
 import ipaddress, re, subprocess, sys

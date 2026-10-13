@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 package tw.local.carusobridge;
 /** Explicit local configuration; never guesses a device address. */
 public final class BridgeConfig {

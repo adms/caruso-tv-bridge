@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Adms Chung
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
 let controller, window;
 if (!app.requestSingleInstanceLock()) app.quit();

@@ -1,6 +1,6 @@
 # Caruso TV Bridge
 
-**Copyright (c) 2026 Adms Chung** · [MIT License](LICENSE) · [引用／改寫／重製署名](docs/ATTRIBUTION.md)
+**Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [引用／改寫／重製署名](docs/ATTRIBUTION.md)
 
 A local web/Electron controller and experimental Sony Android TV bridge for T+A Caruso. Keep optical audio, use Siri Remote volume buttons, and follow TV standby/wake events without a Mac running as the daily bridge.
 
@@ -75,6 +75,8 @@ python3 scripts/check_public_tree.py
 
 ## 引用、改寫與重製
 
-引用、改寫、重製或散布本專案時，請保留 **Copyright (c) 2026 Adms Chung** 並註明本專案來源。MIT 授權要求副本或重要部分保留版權聲明與授權文字。引用格式、衍生作品標示見 [ATTRIBUTION](docs/ATTRIBUTION.md) 與 [CITATION.cff](CITATION.cff)。
+除另有標示的第三方材料外，本專案的原創程式碼、腳本、文件與圖解採 **Apache License 2.0**。再散布時須附上授權文字、依條款保留仍適用的版權與 [NOTICE](NOTICE) 署名資訊；修改後再散布須在修改檔案中清楚標示變更。署名包含 **Copyright (c) 2026 Adms Chung** 與來源 https://github.com/adms/caruso-tv-bridge。
+
+引用格式、義務範圍及舊版 MIT 授權紀錄見 [ATTRIBUTION](docs/ATTRIBUTION.md)；引用 metadata 見 [CITATION.cff](CITATION.cff)。外部貢獻的授權及提交權利說明見 [CONTRIBUTING](CONTRIBUTING.md)。NOTICE 與引用建議不增加 Apache-2.0 的條件。
 
 第三方程式碼保留其原作者與授權，見 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。此為獨立相容性專案，與 T+A、Apple、Sony 無隸屬或背書關係。
