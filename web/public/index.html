@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caruso Remote</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<main class="shell">
+<header><a class="brand" href="/" aria-label="Caruso Remote 首頁"><span class="brand-symbol">c.</span><span>CARUSO <b>REMOTE</b></span></a><nav class="top-nav"><a href="/settings">音場設定與備份</a></nav><div id="connection" class="status"><span class="dot"></span><span id="connection-label">正在連線</span></div></header>
+<section class="intro"><div><p class="eyebrow">YOUR LISTENING SPACE</p><h1>把音樂，留在當下。</h1></div><div class="device"><span class="device-glyph">▥</span><div><strong>T+A Caruso</strong><small id="device-ip">—</small></div></div></section>
+<div class="layout">
+<section class="player card" aria-labelledby="now-playing">
+<div class="section-line"><h2 id="now-playing">播放資訊</h2><span class="source" id="source">—</span></div>
+<div class="record"><div class="record-lines"></div><div class="art-placeholder"><span>c.</span><small>THE SOUND OF YOUR SPACE</small></div><img id="artwork" alt="專輯封面" hidden></div>
+<div class="track-info"><p class="eyebrow" id="play-state">等待音響回應</p><h3 id="track-title">你的下一首好音樂</h3><p id="artist">連線後顯示音響的播放資訊</p></div>
+<div class="timeline"><div class="progress"><div id="progress-fill"></div></div><div class="time"><span id="position">0:00</span><span id="duration">0:00</span></div></div>
+<div class="transport"><button class="icon-button" id="previous" data-command="PREV" aria-label="上一首" disabled><svg viewBox="0 0 24 24"><path d="M6 5v14M19 5 8 12l11 7z"/></svg></button><button id="play" class="play-button" aria-label="播放" disabled><svg id="play-icon" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z"/></svg><svg id="pause-icon" viewBox="0 0 24 24" hidden><path d="M8 5v14M16 5v14"/></svg></button><button class="icon-button" id="next" data-command="NEXT" aria-label="下一首" disabled><svg viewBox="0 0 24 24"><path d="M18 5v14M5 5l11 7-11 7z"/></svg></button></div>
+<button class="text-button" data-command="STOP" id="stop" disabled>停止播放</button>
+</section>
+<div class="side">
+<section class="volume-card card" aria-labelledby="volume-title"><div class="section-line"><h2 id="volume-title">音量</h2><span class="tiny-label">VOLUME</span></div><div class="dial" id="dial"><div class="dial-inner"><span class="volume-number" id="volume-number">—</span><span class="volume-denominator">/ 100</span></div></div><div class="volume-steps"><button id="minus" aria-label="音量減 1" disabled>−</button><p id="volume-caption">音響回傳音量</p><button id="plus" aria-label="音量加 1" disabled>+</button></div><input id="volume" aria-label="音量" type="range" min="0" max="100" value="0" disabled><div class="range-labels"><span>0</span><span>100</span></div><button id="quiet" class="quiet-button" disabled><svg viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4zM16 9l5 6m0-6-5 6"/></svg>音量歸零</button></section>
+<section class="session-card card"><span class="session-icon">↗</span><div><p class="eyebrow">CONNECTED AT HOME</p><h2>直接連上你的音響</h2><p id="session-copy">正在讀取裝置狀態…</p><p class="updated" id="updated">等待第一次同步</p></div></section>
+</div></div>
+<footer><span>CARUSO REMOTE <b>0.2</b></span><span>你的 Mac · 你的音樂</span><span>Copyright (c) 2026 Adms Chung</span></footer>
+</main><div id="toast" role="status" aria-live="polite" hidden></div>
+</body></html>

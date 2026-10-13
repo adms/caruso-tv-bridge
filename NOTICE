@@ -1,0 +1,18 @@
+Caruso TV Bridge
+Copyright (c) 2026 Adms Chung
+https://github.com/adms/caruso-tv-bridge
+
+引用、改寫、重製或散布本專案時，請保留：
+Copyright (c) 2026 Adms Chung
+並註明上述專案來源。散布本專案的副本或重要部分時，須依 MIT License
+保留版權聲明及授權條款。引用格式見 CITATION.cff 與 docs/ATTRIBUTION.md。
+
+When citing, adapting, reproducing or redistributing this project, retain
+"Copyright (c) 2026 Adms Chung" and identify the project source above.
+Copies or substantial portions of the Software must retain the copyright
+and permission notices as required by the MIT License.
+
+Third-party components retain their original ownership and licenses.
+See THIRD_PARTY_NOTICES.md and LICENSES/; do not replace their author notices
+with this project's attribution. Modifications to vendored AdbLib in this
+repository: Copyright (c) 2026 Adms Chung, under its BSD-3-Clause terms.

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you cite, adapt or reproduce this project, credit Adms Chung and retain Copyright (c) 2026 Adms Chung."
+type: software
+title: "Caruso TV Bridge"
+version: 0.3.0
+authors:
+  - family-names: Chung
+    given-names: Adms
+repository-code: "https://github.com/adms/caruso-tv-bridge"
+url: "https://github.com/adms/caruso-tv-bridge"
+license: MIT
+abstract: "An experimental local Caruso controller with a web/Electron UI and configurable Sony Android TV bridge for Siri Remote volume and HDMI-CEC power events."

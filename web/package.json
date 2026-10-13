@@ -1,0 +1,28 @@
+{
+  "name": "caruso-remote",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Local web and macOS remote for a T+A Caruso",
+  "main": "electron.cjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "desktop": "electron .",
+    "test": "node --test test/*.test.mjs",
+    "package:mac": "electron-packager . 'Caruso Remote' --platform=darwin --arch=arm64 --out=dist --overwrite --prune=true --ignore='^/(test|dist|node_modules/.cache)'",
+    "sign:mac": "codesign --force --deep --sign - \"dist/Caruso Remote-darwin-arm64/Caruso Remote.app\""
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.7.0"
+  },
+  "author": "Adms Chung",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adms/caruso-tv-bridge.git",
+    "directory": "web"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
