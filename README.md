@@ -1,49 +1,55 @@
 # Caruso TV Bridge
 
-**Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [引用／改寫／重製署名](docs/ATTRIBUTION.md)
+[English](README.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [繁體中文](README.zh-TW.md)
 
-A local web/Electron controller and experimental Sony Android TV bridge for T+A Caruso. Keep optical audio, use Siri Remote volume buttons, and follow TV standby/wake events without a Mac running as the daily bridge.
+**Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [Attribution](docs/ATTRIBUTION.md)
 
-本專案包含網頁／macOS 遙控器，以及在 Sony Android TV 本機執行的 Siri Remote 橋接。**公開版沒有預設音響 IP**；裝置資訊只在自己的環境設定。
+A local web/macOS remote for **T+A Caruso**, plus an experimental **Sony Android TV bridge for Siri Remote**. Keep your optical audio connection, control Caruso volume with Siri Remote, and follow TV standby/wake events. The TV bridge runs on the television, so a Mac does not need to stay on for everyday bridging.
 
-## 功能
+**No receiver IP address is preset in the public version.** Configure your own devices locally. These README translations do not translate the app: its interface is currently primarily Traditional Chinese. The linked technical guides are mainly in English.
 
-| 元件 | 提供的功能 | 目前限制 |
+## Features
+
+| Component | What it does | Current limits |
 | --- | --- | --- |
-| Sony TV bridge | 收到的紅外線音量 ± → Caruso；TV 待機 → Comfort 待機；Apple TV 喚醒／指定 HDMI Active Source → 開機與光纖 | 依賴 TV 本機 ADB、特定 IR/CEC 行為；不同型號需驗證 |
-| Web / Electron | LUCI 媒體狀態、音量與播放控制；唯讀音場設定頁 | 尚未讀取完整音場設定；完整備份／還原保持鎖定 |
+| Sony TV bridge | Received IR volume ± → Caruso; TV standby → Comfort standby; Apple TV wake / configured HDMI Active Source → power on and optical input | Requires TV-local ADB and compatible IR/HDMI-CEC behavior; each model and firmware needs verification |
+| Web / Electron | LUCI media status, volume and playback controls; read-only sound-settings page | Complete sound settings are not yet readable; full backup and restore remain disabled |
 
-播放／暫停保留 Apple TV 原功能。參考裝置無法在 Sony 端觀察 Siri Remote 的播放鍵，所以光纖跟隨喚醒／HDMI Active Source。切換電視輸入是否會產生該 CEC 訊號，依设备而異。
+Siri Remote play/pause keeps its normal Apple TV function. The reference setup could not observe that button on the Sony side, so optical input selection follows wake / HDMI Active Source instead. Whether changing the TV input produces that CEC event depends on the device.
 
-音量刻度不同：TV bridge 使用 MCU 原生 0–63；Web 使用 LUCI 0–100。兩者不能直接當成相同的格數。
+The volume scales differ: the TV bridge uses native MCU **0–63**, while the web controller uses LUCI **0–100**. Their steps are not directly interchangeable.
 
-## Web / Electron 快速開始
+## Web / macOS quick start
 
-需要 Node.js 22+。以下 `10.0.0.123` 是範例，必須替換成自己的 Caruso IP：
+Requires Node.js 22+; the Electron dependencies require at least 22.12. Clone the repository and enter the web directory:
 
 ```sh
-cd web
-CARUSO_HOST=10.0.0.123 npm start
-# Browser: http://127.0.0.1:43186
+git clone https://github.com/adms/caruso-tv-bridge.git
+cd caruso-tv-bridge/web
 ```
 
-Web 服務只監聽本機 loopback；不是公開網站，也不提供網際網路遠端控制。環境變數未設定時會停止啟動，不會自動掃描或嘗試預設設備。
+The address `10.0.0.123` below is a **synthetic example**. Replace it with your Caruso's private IPv4 address, then start the browser controller:
 
 ```sh
-cd web
+CARUSO_HOST=10.0.0.123 npm start
+```
+
+Open <http://127.0.0.1:43186>. The service listens only on local loopback and does not provide internet remote control. Without `CARUSO_HOST`, startup stops; there is no automatic network scan or fallback device.
+
+For the Electron desktop app, run the following from the same `web/` directory. Stop the browser controller first if it is still running:
+
+```sh
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
 npm run sign:mac
 ```
 
-打包結果在 `web/dist/`。使用 ad-hoc 本地簽章，沒有 Apple Developer ID 公證。打包 App 的設定方式見 [Web / Electron](docs/WEB.md)。
+The packaging script targets **Apple Silicon macOS (arm64)** and writes to `web/dist/`. Signing is local ad-hoc signing, without Apple Developer ID notarization. A packaged app also needs `CARUSO_HOST`; see the [Web / macOS guide](docs/WEB.md) for launch instructions.
 
-## Sony Android TV
+## Sony Android TV setup
 
-閱讀 [Android 建置與安裝](docs/ANDROID.md)。在 App 中設定 Caruso IP、Apple TV 的 HDMI 連接埠、CEC 邏輯位址、紅外線裝置路徑與名稱，再啟動橋接。第一次本機 ADB 授權必須由使用者在電視確認。
-
-日常拓撲：
+Follow the [Android build and installation guide](docs/ANDROID.md). Configure the Caruso IP, Apple TV HDMI port, CEC logical address, and IR device path/name in the app before starting the bridge. The first local ADB authorization must be confirmed on the TV.
 
 ```mermaid
 flowchart LR
@@ -53,17 +59,19 @@ flowchart LR
   T -->|Optical audio| C
 ```
 
-Sony TV 必須允許 `127.0.0.1:5555` 的本機 ADB 連線。這條路徑沿用 Android 正常配對授權；不需要 root，不略過系統確認。不是所有 Android TV 或韌體都提供相同行為。
+The TV must allow local ADB connections to `127.0.0.1:5555`. The bridge uses Android's normal authorization flow, requires no root, and does not bypass the system confirmation. This behavior is not available on every Android TV or firmware version.
 
-## 驗證範圍
+## Validation and limitations
 
-基礎版本曾在單一 Sony Android TV／Caruso 組合上完成實體遙控器音量與電源測試，且 Mac ADB 在操作期間斷開。**公開 v0.3.0 新增可設定裝置欄位，經模擬測試與 APK 建置；沒有宣稱已在所有裝置上實測。**
+The prototype was tested for physical-remote volume and power behavior on **one Sony Android TV / Caruso setup**, with the Mac's ADB connection disconnected during operation. **Public v0.3.0 adds configurable device fields and has passed mock tests and APK builds; this does not establish hardware compatibility for every setup.**
 
-來源已是光纖時不重送選擇指令；從其他來源實際切回光纖、完整電視重新開機後自動啟動，仍需自己的設備驗證。[完整驗證與限制](docs/VALIDATION.md)。
+If optical input is already selected, the bridge does not resend the selection command. Switching from another source to optical, and automatic startup after a full TV reboot, still require verification on your own devices. See [validation details](docs/VALIDATION.md).
 
-不提供 EQ、音場、擺位 setter。匯出的 observation 是狀態觀察，不是可還原的設定備份。
+There are no EQ, sound-field or speaker-placement write controls. Exported observations are status records, **not restorable settings backups**. Runtime logs and exported observations can contain your device IP and media information; redact them before sharing.
 
-## 開發
+## Development
+
+Run from the repository root:
 
 ```sh
 node --test web/test/*.test.mjs
@@ -71,12 +79,12 @@ python3 scripts/test_bridge.py
 python3 scripts/check_public_tree.py
 ```
 
-測試使用本機模擬服務，不需音響。Android 編譯需要 JDK 17+、Python 3.9+ 與 Android SDK，見 `docs/ANDROID.md`。CI 會跑測試、來源去敏化檢查與 unsigned APK 建置，不會連接家用裝置。
+Tests use local mock services and do not require a receiver. Android builds require JDK 17+, Python 3.9+ and an Android SDK. CI runs tests, source privacy checks and an unsigned APK build; it does not connect to household devices.
 
-## 引用、改寫與重製
+## License, attribution and contributions
 
-除另有標示的第三方材料外，本專案的原創程式碼、腳本、文件與圖解採 **Apache License 2.0**。再散布時須附上授權文字、依條款保留仍適用的版權與 [NOTICE](NOTICE) 署名資訊；修改後再散布須在修改檔案中清楚標示變更。署名包含 **Copyright (c) 2026 Adms Chung** 與來源 https://github.com/adms/caruso-tv-bridge。
+Unless identified as third-party material, original code, scripts, documentation and diagrams are licensed under **Apache License 2.0**. Redistribution must include the license and retain applicable copyright and [NOTICE](NOTICE) attribution; modified files must carry change notices as required by the license. Attribution includes **Copyright (c) 2026 Adms Chung** and the [project source](https://github.com/adms/caruso-tv-bridge).
 
-引用格式、義務範圍及舊版 MIT 授權紀錄見 [ATTRIBUTION](docs/ATTRIBUTION.md)；引用 metadata 見 [CITATION.cff](CITATION.cff)。外部貢獻的授權及提交權利說明見 [CONTRIBUTING](CONTRIBUTING.md)。NOTICE 與引用建議不增加 Apache-2.0 的條件。
+See the [attribution guide (Traditional Chinese)](docs/ATTRIBUTION.md) for citation suggestions and the earlier MIT licensing history, [CITATION.cff](CITATION.cff) for citation metadata, and [CONTRIBUTING](CONTRIBUTING.md) for contribution licensing. NOTICE and citation suggestions do not add conditions to Apache-2.0.
 
-第三方程式碼保留其原作者與授權，見 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。此為獨立相容性專案，與 T+A、Apple、Sony 無隸屬或背書關係。
+Third-party components retain their authors and licenses; see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md). This independent compatibility project is not affiliated with or endorsed by T+A, Apple or Sony.
