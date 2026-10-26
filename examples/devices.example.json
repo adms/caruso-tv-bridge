@@ -1,0 +1,14 @@
+{
+  "host": "10.0.0.123",
+  "tvHost": "10.0.0.124",
+  "knob": {
+    "vendor": 0,
+    "product": 0,
+    "pushUsage": 226
+  },
+  "appleTV": {
+    "python": "/path/to/media-venv/bin/python3",
+    "configFile": "/path/to/private/apple-tv-device.json",
+    "profileName": "Viewer"
+  }
+}

@@ -1,0 +1,8 @@
+// Copyright (c) 2026 Adms Chung; SPDX-License-Identifier: Apache-2.0
+import test from 'node:test';import assert from 'node:assert/strict';import {SpectrumFFT,mediaKey,playhead,matchingDuration} from '../public/spectrum-fft.mjs';
+const fft=new SpectrumFFT(),rate=44100;
+function peak(freq){const pcm=Float32Array.from({length:4096},(_,i)=>.2*Math.sin(2*Math.PI*freq*i/rate));const values=fft.analyse(pcm,rate);return values.indexOf(Math.max(...values));}
+test('real FFT separates bass, middle and treble tones into the correct logarithmic bands',()=>{for(const frequency of [110,440,4000]){const expected=Math.log(frequency/40)/Math.log(16000/40)*72;assert.ok(Math.abs(peak(frequency)-expected)<3,`${frequency} Hz must map to its own band`);}assert.ok(peak(4000)>peak(440)+20);});
+test('silence has no invented frequency energy',()=>{assert.ok(fft.analyse(new Float32Array(4096),rate).every(x=>x===0));});
+test('file playhead follows real metadata and stops advancing on pause',()=>{const observedAt='2026-10-25T10:00:00.000Z',m={observedAt,deviceState:'Playing',track:{position:10000}};assert.equal(playhead(m,Date.parse(observedAt)+2000),12);assert.equal(playhead({...m,deviceState:'Paused'},Date.parse(observedAt)+2000),10);assert.equal(playhead(m,Date.parse(observedAt)+20000),10);});
+test('audio is tied to the selected song and version duration',()=>{const m={appId:'com.apple.TVMusic',track:{title:'Song',artist:'Artist',album:'Album',duration:200000}};assert.equal(matchingDuration(201,m),true);assert.equal(matchingDuration(230,m),false);assert.notEqual(mediaKey(m),mediaKey({...m,track:{...m.track,title:'Other song'}}));});

@@ -48,12 +48,14 @@ export class Caruso extends EventEmitter {
     const timeout = setTimeout(() => s.destroy(new Error('Device connection timed out')), 5000);
     s.setNoDelay(true);
     s.on('connect', () => {
-      clearTimeout(timeout); this.send(MID.REGISTER, s.localAddress.replace(/^::ffff:/, ''), 2);
+      clearTimeout(timeout);if(this.closed||this.socket!==s)return;try{this.send(MID.REGISTER,s.localAddress.replace(/^::ffff:/,''),2);}catch(e){s.destroy(e);return;}
       this.registrationTimeout = setTimeout(() => s.destroy(new Error('Registration timed out')), 5000);
     });
     s.on('data', chunk => { try { for (const f of this.decoder.push(chunk)) this.receive(f); } catch (e) { s.destroy(e); } });
-    s.on('error', e => this.update({ lastError: e.message }));
+    s.on('error', e => {if(this.socket===s){this.registered=false;this.update({lastError:e.message});}});
+    s.on('end',()=>{if(this.socket===s)this.registered=false;});
     s.on('close', () => {
+      if(this.socket!==s)return;
       clearTimeout(timeout); clearTimeout(this.registrationTimeout); clearTimeout(this.initialQuery); clearInterval(this.poll);
       this.registered = false; this.rejectPending(new Error('Device disconnected')); this.update({ connected: false, connection: 'offline' });
       if (!this.closed) { this.reconnect = setTimeout(() => this.connect(), this.retry); this.retry = Math.min(this.retry * 2, 15000); }
@@ -63,24 +65,30 @@ export class Caruso extends EventEmitter {
     if (!this.socket || this.socket.destroyed || !this.socket.writable) throw new Error('Device unavailable');
     this.socket.write(encodeFrame(mid, payload, type));
   }
-  refresh() { if (this.registered) for (const mid of [64, 51, 42]) this.send(mid); }
+  refresh(socket=this.socket) {
+    if(this.closed||socket!==this.socket||!this.registered||!socket||socket.destroyed||!socket.writable)return false;
+    try{for(const mid of [64,51,42])this.send(mid);return true;}
+    catch(error){this.registered=false;socket.destroy(error);return false;}
+  }
   receive({ mid, status, payload }) {
     this.lastReceived = Date.now();
     if (status === 2 || status === 3) {
       if (this.pending?.mid === mid || status === 3) this.rejectPending(new Error('Device refused the request'));
       if (status === 3) this.socket.destroy(new Error('Session registration lost')); return;
     }
-    if (mid === 3 && status === 1) {
+    if (mid === 3 && status === 1 && !this.registered) {
       clearTimeout(this.registrationTimeout); this.registered = true; this.retry = 1000;
       this.update({ connected: true, connection: 'online', lastError: null });
-      this.initialQuery = setTimeout(() => this.refresh(), 120); this.poll = setInterval(() => {
+      const socket=this.socket;clearInterval(this.poll);clearTimeout(this.initialQuery);
+      this.initialQuery = setTimeout(() => this.refresh(socket), 120); this.poll = setInterval(() => {
+        if(this.closed||this.socket!==socket)return;
         if (Date.now() - this.lastReceived > 25000) this.socket.destroy(new Error('Device stopped responding'));
-        else this.refresh();
+        else this.refresh(socket);
       }, 10000);
     }
     const change = { lastSeen: new Date().toISOString() };
-    if (mid === 64 && /^\d+$/.test(payload) && +payload <= 100) change.volume = +payload;
-    if (mid === 51 && /^[0125]$/.test(payload)) change.playState = +payload;
+    if (mid === 64 && /^\d+$/.test(payload) && +payload <= 100) {change.volume = +payload;change.volumeSeenAt=change.lastSeen;}
+    if (mid === 51 && /^[0125]$/.test(payload)) {change.playState = +payload;change.playStateSeenAt=change.lastSeen;}
     if (mid === 49 && /^-?\d+$/.test(payload) && this.state.track) change.track = { ...this.state.track, position: Math.max(0, +payload) };
     if ((mid === 42 || mid === 45) && payload) {
       try {
@@ -88,10 +96,11 @@ export class Caruso extends EventEmitter {
         if (d && typeof d === 'object') {
           const str = v => typeof v === 'string' && v !== 'null' ? v : '';
           const url = str(d.CoverArtUrl);
+          change.trackSeenAt=change.lastSeen;
           change.track = { title: str(d.TrackName), artist: str(d.Artist), album: str(d.Album), artwork: /^https?:\/\//.test(url) ? url : '',
             source: str(d.PlayUrl).startsWith('spotify:') ? 'Spotify' : `Source ${d['Current Source'] ?? '—'}`,
             duration: Number(d.TotalTime) || 0, position: Math.max(0, Number(d.Current_time) || 0), next: d.Next === true, previous: d.Prev === true };
-          if ([0, 1, 2, 5].includes(d.PlayState)) change.playState = d.PlayState;
+          if ([0, 1, 2, 5].includes(d.PlayState)) {change.playState = d.PlayState;change.playStateSeenAt=change.lastSeen;}
         }
       } catch { /* Ignore unrelated vendor messages. */ }
     }
@@ -103,7 +112,7 @@ export class Caruso extends EventEmitter {
   }
   rejectPending(error) { if (this.pending) { clearTimeout(this.pending.timer); this.pending.reject(error); this.pending = null; } }
   command(action, value) {
-    if (!this.registered) return Promise.reject(new Error('Device is offline'));
+    if (this.closed||!this.registered||!this.socket||this.socket.destroyed||!this.socket.writable) return Promise.reject(new Error('Device is offline'));
     if (this.pending) return Promise.reject(new Error('Another command is still pending'));
     let mid, payload;
     if (action === 'volume') {

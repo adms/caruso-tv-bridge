@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [Attribution](docs/ATTRIBUTION.md)
 
+**Desktop source update (0.5.31):** Apple TV music metadata/control, USB knob mute/restore, synchronized lyrics and decorative Zen Sand are included. Setup uses private local files; see [desktop setup](docs/WEB.md) and [publication/privacy boundaries](docs/PUBLICATION.md).
+
 A local web/macOS remote for **T+A Caruso**, plus an experimental **Sony Android TV bridge for Siri Remote**. Keep your optical audio connection, control Caruso volume with Siri Remote, and follow TV standby/wake events. The TV bridge runs on the television, so a Mac does not need to stay on for everyday bridging.
 
 **No receiver IP address is preset in the public version.** Configure your own devices locally. These README translations do not translate the app: its interface is currently primarily Traditional Chinese. The linked technical guides are mainly in English.
@@ -42,10 +44,10 @@ For the Electron desktop app, run the following from the same `web/` directory. 
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-The packaging script targets **Apple Silicon macOS (arm64)** and writes to `web/dist/`. Signing is local ad-hoc signing, without Apple Developer ID notarization. A packaged app also needs `CARUSO_HOST`; see the [Web / macOS guide](docs/WEB.md) for launch instructions.
+The packaging script targets **Apple Silicon macOS (arm64)** and writes to `web/dist/`. The command above uses local ad-hoc signing. For Developer ID signing, use your own `CARUSO_MAC_SIGN_IDENTITY` with `npm run sign:mac`; notarization is separate. Launch with `CARUSO_HOST` or a private `devices.json`; see the [Web / macOS guide](docs/WEB.md).
 
 ## Sony Android TV setup
 
@@ -76,7 +78,8 @@ Run from the repository root:
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 Tests use local mock services and do not require a receiver. Android builds require JDK 17+, Python 3.9+ and an Android SDK. CI runs tests, source privacy checks and an unsigned APK build; it does not connect to household devices.

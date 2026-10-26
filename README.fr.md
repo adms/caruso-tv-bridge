@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [Attribution](docs/ATTRIBUTION.md)
 
+**Sources bureau 0.5.31 :** contrôle et métadonnées musicales Apple TV, sourdine USB, paroles synchronisées et Zen Sand décoratif sont inclus. La configuration reste dans des fichiers locaux privés : [guide bureau](docs/WEB.md), [confidentialité de publication](docs/PUBLICATION.md).
+
 Une télécommande locale web/macOS pour **T+A Caruso**, accompagnée d'une **passerelle expérimentale pour Siri Remote sur Sony Android TV**. Conservez votre liaison audio optique, réglez le volume du Caruso avec Siri Remote et suivez la mise en veille et le réveil du téléviseur. La passerelle fonctionne directement sur le téléviseur : aucun Mac n'a besoin de rester allumé pour son usage quotidien.
 
 **Aucune adresse IP du système audio n'est prédéfinie dans la version publique.** Configurez vos appareils uniquement dans votre environnement local. Ces traductions concernent les README ; l'interface de l'application est actuellement principalement en chinois traditionnel. Les guides techniques liés sont surtout en anglais.
@@ -42,10 +44,10 @@ Pour l'application de bureau Electron, exécutez les commandes suivantes depuis 
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-Le script de création du paquet cible **macOS sur Apple Silicon (arm64)** et écrit dans `web/dist/`. La signature est locale et ad hoc, sans notarisation Apple Developer ID. L'application empaquetée exige également `CARUSO_HOST` ; consultez le [guide web / macOS](docs/WEB.md) pour la lancer.
+Le paquet **Apple Silicon macOS (arm64)** est créé dans `web/dist/`. La commande ci-dessus utilise une signature ad hoc locale. Pour Developer ID, utilisez votre propre `CARUSO_MAC_SIGN_IDENTITY` avec `npm run sign:mac` ; la notarisation est distincte. Le lancement utilise `CARUSO_HOST` ou un fichier privé `devices.json` : [guide web/macOS](docs/WEB.md).
 
 ## Configuration sur Sony Android TV
 
@@ -76,7 +78,8 @@ Aucune commande ne permet de modifier l'égaliseur, le champ sonore ou les régl
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 Les tests utilisent des services locaux simulés et ne nécessitent pas de système audio. Les compilations Android nécessitent JDK 17+, Python 3.9+ et un Android SDK. La CI exécute les tests, vérifie l'absence de données privées dans les sources et produit un APK non signé ; elle ne se connecte pas aux appareils domestiques.

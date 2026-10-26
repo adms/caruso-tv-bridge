@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [Attribuzione](docs/ATTRIBUTION.md)
 
+**Sorgenti desktop 0.5.31:** includono controllo e metadati musicali Apple TV, mute USB, testi sincronizzati e Zen Sand decorativo. La configurazione usa file locali privati: [guida desktop](docs/WEB.md), [privacy della pubblicazione](docs/PUBLICATION.md).
+
 Un telecomando locale web/macOS per **T+A Caruso**, con un **bridge sperimentale per Siri Remote su Sony Android TV**. Mantieni il collegamento audio ottico, regola il volume del Caruso con Siri Remote e sincronizza il comportamento del sistema con lo standby e il risveglio del televisore. Il bridge viene eseguito sul televisore: per l'uso quotidiano non è necessario lasciare acceso un Mac.
 
 **La versione pubblica non contiene un indirizzo IP preimpostato per il sistema audio.** Configura i tuoi dispositivi solo nell'ambiente locale. Queste traduzioni riguardano i README; l'interfaccia dell'app è attualmente soprattutto in cinese tradizionale. Le guide tecniche collegate sono principalmente in inglese.
@@ -42,10 +44,10 @@ Per l'app desktop Electron, esegui i seguenti comandi dalla stessa directory `we
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-Lo script di packaging genera un'app per **macOS su Apple Silicon (arm64)** in `web/dist/`. La firma è ad hoc e locale, senza notarizzazione Apple Developer ID. Anche l'app pacchettizzata richiede `CARUSO_HOST`; consulta la [guida web / macOS](docs/WEB.md) per le istruzioni di avvio.
+Il pacchetto per **Apple Silicon macOS (arm64)** viene creato in `web/dist/`. Il comando sopra usa una firma ad hoc locale. Per Developer ID, usare la propria `CARUSO_MAC_SIGN_IDENTITY` con `npm run sign:mac`; la notarizzazione è separata. Avviare con `CARUSO_HOST` o un file privato `devices.json`: [guida web/macOS](docs/WEB.md).
 
 ## Configurazione su Sony Android TV
 
@@ -76,7 +78,8 @@ Esegui dalla directory principale del repository:
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 I test usano servizi locali simulati e non richiedono un sistema audio. Le compilazioni Android richiedono JDK 17+, Python 3.9+ e un Android SDK. La CI esegue test, controlli sui dati privati nel codice sorgente e una compilazione APK non firmata; non si collega ai dispositivi domestici.

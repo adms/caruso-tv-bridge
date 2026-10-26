@@ -1,0 +1,8 @@
+{
+  "host": "10.0.0.3",
+  "name": "REPLACE_WITH_YOUR_APPLE_TV_NAME",
+  "profileName": "Viewer",
+  "developerDeviceId": "REPLACE_WITH_YOUR_DEVELOPER_DEVICE_ID",
+  "diagnosticsPython": "/path/to/developer-venv/bin/python3",
+  "screenLock": "/path/to/private/apple-tv-screen.lock"
+}

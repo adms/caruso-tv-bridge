@@ -1,0 +1,14 @@
+// Copyright (c) 2026 Adms Chung; SPDX-License-Identifier: Apache-2.0
+import {SpectrumFFT,mediaKey,playhead,matchingDuration} from './spectrum-fft.mjs';
+const root=document.getElementById('ambient-spectrum'),input=document.getElementById('spectrum-file'),button=document.getElementById('spectrum-load'),caption=document.getElementById('spectrum-status');
+const fft=new SpectrumFFT(),frame=new Float32Array(fft.size),heights=new Float32Array(72);let media=null,audio=null,boundKey=null,last=0,lastPosition=-1,decoding=false;
+const flat=()=>{root.classList.remove('has-audio');for(const bar of root.children)bar.style.height='2px';heights.fill(0);};
+window.addEventListener('caruso-media',event=>{media=event.detail;if(audio&&media&&mediaKey(media)!==boundKey){audio=null;boundKey=null;flat();caption.textContent='歌曲已更換 · 待載入同曲音檔';}});
+button.addEventListener('click',()=>input.click());
+input.addEventListener('change',async()=>{const file=input.files?.[0];if(!file||decoding)return;const key=mediaKey(media);if(!key){caption.textContent='請先播放歌曲，再載入同曲音檔';input.value='';return;}if(file.size>100*1024*1024){caption.textContent='音檔上限 100 MB';input.value='';return;}decoding=true;button.disabled=true;caption.textContent='正在讀取音檔…';let context;
+ try{context=new OfflineAudioContext(1,1,44100);const decoded=await context.decodeAudioData(await file.arrayBuffer());if(decoded.duration>900)throw Error('音檔長度上限 15 分鐘');if(mediaKey(media)!==key)throw Error('歌曲已更換，請重新選擇音檔');if(!matchingDuration(decoded.duration,media))throw Error('音檔長度與目前歌曲不符，請選擇同一版本');audio=decoded;boundKey=key;lastPosition=-1;root.classList.add('has-audio');caption.textContent='音檔分析 · 依播放進度同步';root.title='分析本機音檔：'+file.name+'；未使用麥克風，音檔不會上傳';}
+ catch(error){audio=null;boundKey=null;flat();caption.textContent=error.name==='EncodingError'?'音檔無法解碼，可能受保護或格式不支援':error.message||'無法讀取音檔';}
+ finally{decoding=false;button.disabled=false;input.value='';context=null;}
+});
+function draw(now){requestAnimationFrame(draw);if(!audio||!media||mediaKey(media)!==boundKey||now-last<65)return;last=now;const position=playhead(media);if(media.deviceState!=='Playing'&&position===lastPosition)return;lastPosition=position;const start=Math.floor(position*audio.sampleRate)-fft.size/2;const channels=Math.min(2,audio.numberOfChannels),values=new Float32Array(72);for(let c=0;c<channels;c++){frame.fill(0);const samples=audio.getChannelData(c);for(let i=0;i<frame.length;i++){const at=start+i;if(at>=0&&at<samples.length)frame[i]=samples[at];}const bands=fft.analyse(frame,audio.sampleRate);for(let i=0;i<values.length;i++)values[i]=Math.max(values[i],bands[i]);}for(let i=0;i<values.length;i++){const blend=values[i]>heights[i] ? 0.48 : 0.12;heights[i]+=(values[i]-heights[i])*blend;root.children[i].style.height=(2+25*heights[i]**.8).toFixed(2)+'px';}}
+flat();requestAnimationFrame(draw);

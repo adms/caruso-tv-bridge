@@ -1,0 +1,4 @@
+// Copyright (c) 2026 Adms Chung
+// SPDX-License-Identifier: Apache-2.0
+const {contextBridge,ipcRenderer}=require('electron');
+contextBridge.exposeInMainWorld('carusoDesktop',{musicAction:input=>ipcRenderer.invoke('music-action',input),discoverDevices:()=>ipcRenderer.send('discover-devices'),activityStatus:()=>ipcRenderer.invoke('activity-status'),watchCommunity:()=>ipcRenderer.invoke('watch-community'),onActivityResult:callback=>{ipcRenderer.on('activity-result',(_event,result)=>callback(result));},onActivityState:callback=>{ipcRenderer.on('activity-state',(_event,state)=>callback(state));},openNetworkSettings:()=>ipcRenderer.send('open-network-settings'),requestKnobAccess:()=>ipcRenderer.send('request-knob-access'),reconnectKnob:()=>ipcRenderer.send('reconnect-knob'),openInputSettings:()=>ipcRenderer.send('open-input-settings'),restart:()=>ipcRenderer.send('restart-app')});

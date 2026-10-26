@@ -1,0 +1,2 @@
+<!-- Copyright (c) 2026 Adms Chung; SPDX-License-Identifier: Apache-2.0 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="320dp" android:height="180dp" android:viewportWidth="320" android:viewportHeight="180"><path android:fillColor="#101827" android:pathData="M0,0h320v180H0z"/><path android:fillColor="#51D5C5" android:pathData="M95,70h30l40,-30v100l-40,-30H95z M182,62h10v56h-10z M207,48h10v84h-10z"/></vector>

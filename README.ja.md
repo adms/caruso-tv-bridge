@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [著作権・出典表記](docs/ATTRIBUTION.md)
 
+**デスクトップ版ソース 0.5.31:** Apple TV の音楽操作・メタデータ、USB ノブのミュート、同期歌詞、装飾用 Zen Sand を含みます。設定は非公開のローカルファイルで管理します。[セットアップ](docs/WEB.md)・[公開時のプライバシー](docs/PUBLICATION.md)を参照してください。
+
 **T+A Caruso** を操作するローカル Web／macOS リモコンと、**Sony Android TV 上で動作する Siri Remote 用の実験的なブリッジ**です。光デジタル音声接続を維持したまま、Siri Remote で Caruso の音量を調整し、テレビの待機・復帰に連動させられます。ブリッジはテレビ本体で動作するため、日常的な連携のために Mac を起動しておく必要はありません。
 
 **公開版にはオーディオ機器の IP アドレスを初期値として設定していません。** ご自身の機器情報をローカル環境で設定してください。今回の翻訳対象は README です。アプリの画面は現在、主に繁体字中国語で表示されます。リンク先の技術ガイドは主に英語です。
@@ -42,10 +44,10 @@ Electron デスクトップアプリを使う場合は、同じ `web/` ディレ
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-パッケージ作成スクリプトは **Apple Silicon 搭載 Mac（arm64）** を対象とし、`web/dist/` に出力します。署名はローカルの ad-hoc 署名で、Apple Developer ID による公証は行っていません。パッケージ版も `CARUSO_HOST` が必要です。起動方法は [Web / macOS ガイド](docs/WEB.md) を参照してください。
+パッケージは **Apple Silicon macOS（arm64）** 用に `web/dist/` へ出力します。上のコマンドはローカルの ad-hoc 署名です。Developer ID 署名には自身の `CARUSO_MAC_SIGN_IDENTITY` を設定して `npm run sign:mac` を実行します。公証は別工程です。起動には `CARUSO_HOST` または非公開の `devices.json` を使用します。[Web/macOS ガイド](docs/WEB.md)を参照してください。
 
 ## Sony Android TV の設定
 
@@ -76,7 +78,8 @@ EQ、音場、スピーカー設置位置の設定を書き換える操作はあ
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 テストはローカルの模擬サービスを使用するため、オーディオ機器は不要です。Android のビルドには JDK 17 以降、Python 3.9 以降、Android SDK が必要です。CI はテスト、ソース内の個人情報チェック、未署名 APK のビルドを実行します。家庭内の機器には接続しません。

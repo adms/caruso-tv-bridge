@@ -27,8 +27,9 @@ test('corrupted checksum and oversized frame fail closed', () => {
   const bad=Buffer.alloc(10);bad.writeUInt16BE(6000,8);assert.throws(()=>new FrameDecoder().push(bad),/length/);
 });
 test('live TCP client confirms a volume response and rejects unsupported commands',async t=>{
-  let volume=23;
+  let volume=23,closing=false;
   const server=net.createServer(socket=>{
+    socket.on('error',error=>{if(!closing||error.code!=='ECONNRESET')throw error;});
     let buf=Buffer.alloc(0);
     socket.on('data',chunk=>{
       buf=Buffer.concat([buf,chunk]);
@@ -43,7 +44,7 @@ test('live TCP client confirms a volume response and rejects unsupported command
   });
   server.listen(0,'127.0.0.1');await once(server,'listening');
   const c=new Caruso('127.0.0.1',{port:server.address().port});
-  t.after(async()=>{c.stop();await new Promise(r=>server.close(r));});
+  t.after(async()=>{closing=true;c.stop();await new Promise(r=>server.close(r));});
   const connected=new Promise(r=>c.on('state',s=>{if(s.connected)r();}));c.start();await connected;
   await assert.rejects(c.command('RESET'),/Unsupported/);
   await assert.rejects(c.command('volume',101),/integer/);
@@ -70,4 +71,14 @@ test('unexpected disconnect reconnects and registers without sending a control c
  t.after(async()=>{c.stop();await new Promise(r=>server.close(r));});
  const recovered=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Reconnect failed')),4000);c.on('state',s=>{if(s.connected&&connections>=2){clearTimeout(timer);resolve();}});});
  c.start();await recovered;assert.equal(connections,2);assert.deepEqual(commands,[]);
+});
+test('timer refresh tolerates a destroyed or unwritable socket before close is delivered',()=>{
+ const c=new Caruso('127.0.0.1');c.registered=true;c.socket={destroyed:true,writable:false};assert.doesNotThrow(()=>c.refresh());assert.equal(c.refresh(),false);
+ c.socket={destroyed:false,writable:false};assert.equal(c.refresh(),false);
+});
+test('poll write failure closes the connection instead of escaping the timer callback',()=>{
+ const c=new Caruso('127.0.0.1');let destroyed;const socket={destroyed:false,writable:true,destroy(e){destroyed=e;}};c.socket=socket;c.registered=true;c.send=()=>{throw Error('Device unavailable');};assert.doesNotThrow(()=>c.refresh(socket));assert.equal(c.registered,false);assert.match(destroyed.message,/unavailable/);
+});
+test('stale scheduled refresh cannot query a replacement connection',()=>{
+ const c=new Caruso('127.0.0.1');const previous={destroyed:false,writable:true};c.socket={destroyed:false,writable:true};c.registered=true;let sent=0;c.send=()=>sent++;assert.equal(c.refresh(previous),false);assert.equal(sent,0);
 });

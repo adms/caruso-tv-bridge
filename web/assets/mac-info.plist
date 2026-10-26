@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_http._tcp</string>
+		<string>_airplay._tcp</string>
+		<string>_raop._tcp</string>
+	</array>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (c) 2026 Adms Chung</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>連接同一網路中的 Caruso 音響與 Sony 電視，以控制音量、電源及傳送電視訊息。</string>
+</dict>
+</plist>

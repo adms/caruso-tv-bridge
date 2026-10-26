@@ -15,6 +15,14 @@ Retained license texts are in `LICENSES/AdbLib-BSD-3-Clause.txt`, `LICENSES/aiol
 
 AdbLib is pinned to commit `d6937951eb98557c76ee2081e383d50886ce109a`. Local modifications address concurrent stream tracking, serialized packet writes, stream-open races, closure visibility, and draining already-received data after a peer closes. **Copyright (c) 2026 Adms Chung** applies to these modifications under the upstream **BSD-3-Clause** terms. Upstream copyright is preserved; these files are an explicit exception to the project's Apache-2.0 license.
 
+## Optional Apple TV Python runtimes
+
+- **pyatv 0.18.0**, MIT, [project and license](https://github.com/postlund/pyatv). Used through a separately installed Python environment for Apple TV remote commands and metadata. The retained upstream MIT text is `LICENSES/pyatv-MIT.txt`.
+- **pymobiledevice3 11.35.0**, GPL-3.0-or-later, [upstream license](https://github.com/doronz88/pymobiledevice3/blob/master/LICENSE). Used by the optional developer-screen helper through a separately installed Python environment. No pymobiledevice3 code, Python environment, developer pairing, or dependent binary is included in this source export or the desktop bundle. Its license remains separate; do not bundle that runtime under the project's Apache-2.0 notice.
+- macOS Vision, ImageIO, IOKit and CoreFoundation are Apple system frameworks, not vendored source. Native helpers are built from this project's source and require the user's local SDK/build tools.
+- LRCLIB supplies third-party lyric data at runtime. Cached lyrics, provider artwork and listening records are private runtime data and are excluded from the source export. The project does not grant rights in that content.
+- `web/assets/caruso-*.png` and `caruso.icns` are the project's generated icon assets. Nonvisual metadata has been removed; these assets do not include manufacturer-provided product artwork.
+
 ## Source and binary distributions
 
 - Source distributions retain LICENSE, NOTICE, this file and the applicable texts in LICENSES/. Do not replace third-party author notices with the project's copyright or license.

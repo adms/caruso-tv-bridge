@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [Urheber- und Quellenangaben](docs/ATTRIBUTION.md)
 
+**Desktop-Quellstand 0.5.31:** Apple-TV-Musiksteuerung und Metadaten, USB-Stummschaltung, synchronisierte Liedtexte und dekoratives Zen Sand sind enthalten. Die Einrichtung verwendet private lokale Dateien: [Desktop-Anleitung](docs/WEB.md), [Datenschutz bei der Veröffentlichung](docs/PUBLICATION.md).
+
 Eine lokale Web-/macOS-Fernbedienung für **T+A Caruso** und eine experimentelle **Sony-Android-TV-Bridge für die Siri Remote**. Die optische Audioverbindung bleibt erhalten: Die Siri Remote steuert die Caruso-Lautstärke, und die Bridge folgt dem Standby- und Aufwachverhalten des Fernsehers. Sie läuft direkt auf dem Fernseher; für den täglichen Bridge-Betrieb muss kein Mac eingeschaltet bleiben.
 
 **In der öffentlichen Version ist keine IP-Adresse des Audiogeräts voreingestellt.** Konfigurieren Sie Ihre Geräte ausschließlich lokal. Diese Übersetzungen betreffen die README-Dateien; die App-Oberfläche ist derzeit überwiegend auf traditionellem Chinesisch. Die verlinkten technischen Anleitungen sind hauptsächlich auf Englisch.
@@ -42,10 +44,10 @@ Für die Electron-Desktop-App führen Sie die folgenden Befehle im selben Verzei
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-Das Paketierungsskript erstellt eine App für **macOS auf Apple Silicon (arm64)** unter `web/dist/`. Es verwendet eine lokale Ad-hoc-Signatur ohne Apple-Developer-ID-Notarisierung. Auch die paketierte App benötigt `CARUSO_HOST`; Startanweisungen stehen in der [Web-/macOS-Anleitung](docs/WEB.md).
+Das Paketierungsskript erstellt eine App für **Apple Silicon macOS (arm64)** in `web/dist/`. Der obige Befehl signiert lokal ad hoc. Für Developer ID verwenden Sie Ihre eigene `CARUSO_MAC_SIGN_IDENTITY` mit `npm run sign:mac`; die Notarisierung erfolgt separat. Der Start verwendet `CARUSO_HOST` oder eine private `devices.json`: [Web-/macOS-Anleitung](docs/WEB.md).
 
 ## Einrichtung auf Sony Android TV
 
@@ -76,7 +78,8 @@ Im Stammverzeichnis des Repositorys ausführen:
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 Die Tests verwenden lokale simulierte Dienste und benötigen kein Audiogerät. Android-Builds benötigen JDK 17+, Python 3.9+ und ein Android SDK. CI führt Tests, Datenschutzprüfungen des Quellbaums und einen unsignierten APK-Build aus; Verbindungen zu privaten Geräten werden nicht hergestellt.

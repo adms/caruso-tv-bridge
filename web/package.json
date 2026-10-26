@@ -1,6 +1,6 @@
 {
   "name": "caruso-remote",
-  "version": "0.3.0",
+  "version": "0.5.31",
   "private": true,
   "description": "Local web and macOS remote for a T+A Caruso",
   "main": "electron.cjs",
@@ -8,8 +8,10 @@
     "start": "node server.mjs",
     "desktop": "electron .",
     "test": "node --test test/*.test.mjs",
-    "package:mac": "electron-packager . 'Caruso Remote' --platform=darwin --arch=arm64 --out=dist --overwrite --prune=true --ignore='^/(test|dist|node_modules/.cache)'",
-    "sign:mac": "codesign --force --deep --sign - \"dist/Caruso Remote-darwin-arm64/Caruso Remote.app\""
+    "package:mac": "npm run build:knob && electron-packager . 'Caruso Remote' --platform=darwin --arch=arm64 --out=dist --overwrite --prune=true --ignore='^/(test|dist|node_modules/.cache)' --icon=assets/caruso.icns --extra-resource=native/caruso-hid.node --extra-resource=native/caruso-network.node --extra-resource=../scripts/apple_tv_activity.py --extra-resource=../scripts/apple_tv_watch.py --extra-resource=../scripts/apple_tv_screen.py --extra-resource=native/caruso-ocr --extra-resource=../scripts/apple_tv_music_remote.py --extra-resource=../scripts/apple_tv_music_screen.py --extra-resource=../scripts/apple_tv_now_playing.py --extra-resource=native/caruso-tv-image --ignore='^/native/(CarusoKnob|caruso-hid.node|caruso-network.node|caruso-ocr|caruso-tv-image)$' --app-bundle-id=ai.adms.caruso-remote --extend-info=assets/mac-info.plist",
+    "sign:mac": "python3 ../scripts/sign_mac.py 'dist/Caruso Remote-darwin-arm64/Caruso Remote.app'",
+    "build:knob": "python3 ../scripts/build_hid.py",
+    "sign:mac:adhoc": "codesign --force --deep --sign - \"dist/Caruso Remote-darwin-arm64/Caruso Remote.app\""
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

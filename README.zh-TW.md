@@ -4,6 +4,8 @@
 
 **Copyright (c) 2026 Adms Chung** · [Apache-2.0](LICENSE) · [引用／改寫／重製署名](docs/ATTRIBUTION.md)
 
+**桌面版原始碼 0.5.31：**包含 Apple TV 音樂控制／資訊、USB 旋鈕靜音、同步歌詞及裝飾用 Zen 沙畫。設備與帳號資料以本機私有檔案設定，請見[桌面設定](docs/WEB.md)及[公開版本隱私邊界](docs/PUBLICATION.md)。
+
 A local web/Electron controller and experimental Sony Android TV bridge for T+A Caruso. Keep optical audio, use Siri Remote volume buttons, and follow TV standby/wake events without a Mac running as the daily bridge.
 
 本專案包含網頁／macOS 遙控器，以及在 Sony Android TV 本機執行的 Siri Remote 橋接。**公開版沒有預設音響 IP**；裝置資訊只在自己的環境設定。
@@ -36,10 +38,10 @@ cd web
 npm ci
 CARUSO_HOST=10.0.0.123 npm run desktop
 npm run package:mac
-npm run sign:mac
+npm run sign:mac:adhoc
 ```
 
-打包結果在 `web/dist/`。使用 ad-hoc 本地簽章，沒有 Apple Developer ID 公證。打包 App 的設定方式見 [Web / Electron](docs/WEB.md)。
+打包結果位於 `web/dist/`，目標為 **Apple Silicon macOS（arm64）**。上述命令使用本機 ad-hoc 簽章。Developer ID 簽署請設定自己的 `CARUSO_MAC_SIGN_IDENTITY` 再執行 `npm run sign:mac`；公證是另一步驟。可使用 `CARUSO_HOST` 或本機私有的 `devices.json` 啟動，詳見 [Web / macOS 設定](docs/WEB.md)。
 
 ## Sony Android TV
 
@@ -70,7 +72,8 @@ Sony TV 必須允許 `127.0.0.1:5555` 的本機 ADB 連線。這條路徑沿用 
 ```sh
 node --test web/test/*.test.mjs
 python3 scripts/test_bridge.py
-python3 scripts/check_public_tree.py
+python3 -m unittest discover -s scripts/tests
+python3 scripts/check_public_tree.py --history
 ```
 
 測試使用本機模擬服務，不需音響。Android 編譯需要 JDK 17+、Python 3.9+ 與 Android SDK，見 `docs/ANDROID.md`。CI 會跑測試、來源去敏化檢查與 unsigned APK 建置，不會連接家用裝置。
